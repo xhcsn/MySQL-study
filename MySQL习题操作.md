@@ -95,7 +95,7 @@ insert into Teacher values('03' , '王五');
 ##### 分数表
 ###### 创建分数表
 ```
-create table SC(SId varchar(10),CId varchar(10),score decimal(18,1));
+create table SC(SId varchar(1；0),CId varchar(10),score decimal(18,1));
 ```
 ###### 插入数据
 ```
@@ -139,24 +139,113 @@ insert into SC values('07' , '03' , 98);
 
 
 
+#### 查询"01"课程比"02"课程成绩高的学生的信息及课程分数
 
+##### 第一种方法
+直接使用select-from-where，只是where的条件较多
+```
+select st.*,
+    -> s1.score '01_score',
+    -> s2.score '02_score'
+    -> from
+    -> student st,
+    -> sc s1,
+    -> sc s2
+    -> where
+    -> st.sid = s1.sid
+    -> and st.sid = s2.sid
+    -> and s1.cid = '01'
+    -> and s2.cid = '02'
+    -> and s1.score > s2.score;
+```
+##### 第二种方法
+使用left join和right join
+```
+select st.*,
+    -> sc1.score '01_score',
+    -> sc2.score '02_score'
+    -> from
+    -> student st
+    -> left join sc sc1 on st.sid=sc1.sid
+    -> and sc1.cid ='01'
+    -> left join sc sc2 on st.sid=sc2.sid
+    -> and sc2.cid ='02'
+    -> where
+    -> sc1.score>sc2.score;
+```
 
+#### 查询平均成绩大于等于60分的同学的学生编号和学生姓名和平均成绩
+```
+ SELECT
+    -> st.sid,
+    -> st.sname,
+    -> ROUND(( sc.score ),2) avg_score
+    -> from
+    -> Student st
+    -> left join sc
+    -> on st.sid =sc.sid
+    -> group
+    -> by
+    -> sc.sid
+    -> having
+    -> AVG(sc.score)>60;
+```
 
+#### 查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩
+```
+ select
+    -> st.sid,
+    -> st.sname,
+    -> count(sc.cid) course_number,
+    -> sum(sc.score) score_sum
+    -> from
+    -> student st
+    -> left join
+    -> sc
+    -> on st.sid =sc.sid
+    -> group by st.sid;
+```
 
+#### 查询“李”姓老师的数量
+```
+ select
+    -> teacher.tname,count(teacher.tname) name_li_number
+    -> from teacher
+    -> where
+    -> teacher.tname like '李%';
+```
 
+#### 查询学过张三老师授课的同学的信息
+```
+select
+    -> st.*
+    -> from
+    -> student st,
+    -> course c,
+    -> sc,
+    -> teacher t
+    -> where
+    -> st.sid = sc.sid
+    -> and sc.cid = c.cid
+    -> and c.tid = t.tid
+    -> and t.tname = '张三';
 
+```
 
-
-
-
-
-
-
-
-
-
-
-
+查询学过编号为01，并且学过编号为02课程的学生信息
+```
+SELECT
+	st.* 
+FROM
+	Student st,
+	Score s1,
+	Score s2 
+WHERE
+	st.s_id = s1.s_id 
+	AND s1.s_id = s2.s_id 
+	AND s1.c_id = "01" 
+	AND s2.c_id = "02"
+```
 
 
 
